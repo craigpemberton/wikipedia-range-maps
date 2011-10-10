@@ -47,10 +47,10 @@ def produceMap(root, files):
 			raise ValueError(file_, image.getbands())
 		images.append(image.getdata())
 	diversity = map(sum, zip(*images))
-	freq(diversity)
+	#freq(diversity)
 	highestDiversity = max(diversity)
 	colors = gradient(highestDiversity)
-	land = Image.open('world.png').getdata()
+	land = Image.open('world/world.png').getdata()
 	rangeMap = []
 	for landPixel, numCritters in zip(land, diversity):
 		if landPixel == WHITE:
@@ -62,7 +62,9 @@ def produceMap(root, files):
 	saveMap(rangeMap, root)
 
 def saveMap(data, taxon):
-	im = Image.open('world.png')
+	im = Image.open('world/world.png')
+	if im.getbands() != ('R', 'G', 'B'):
+		raise ValueError("world.png", im.getbands())
 	image = im.load()
 
 	pixels = iter(data)
@@ -74,8 +76,7 @@ def saveMap(data, taxon):
 				except TypeError, e:
 					print x, y, e, temp, type(temp)
 					exit(-1)
-	im.save(taxon + '.png')
-	
+	im.save('output/' + taxon.split('/')[-1] + '.png')
 
 if __name__ == "__main__":
 
