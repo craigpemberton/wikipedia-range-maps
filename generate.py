@@ -45,9 +45,13 @@ def produceMap(root, files):
 		image = Image.open(os.path.join(root,file_))
 		if image.getbands() != ('P',):
 			raise ValueError(file_, image.getbands())
+		if len(image.getcolors()) != 2:
+			raise ValueError(file_, image.getcolors())
 		images.append(image.getdata())
 	diversity = map(sum, zip(*images))
-	#freq(diversity)
+	print root
+	freq(diversity)
+	print
 	highestDiversity = max(diversity)
 	colors = gradient(highestDiversity)
 	land = Image.open('world/world.png').getdata()
