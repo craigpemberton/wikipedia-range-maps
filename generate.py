@@ -5,6 +5,12 @@ import os, math, Image, ImageDraw, ImageFont, itertools, subprocess
 MAX_COLOR = (0, 32, 32)
 WHITE = (255, 255, 255)
 
+def boundCoords(image):
+	#return image.getbbox()
+
+deff boundCrop(image)
+	#image.crop(coords)
+
 def scalarProduct(a, c):
 	return map(lambda x:x*c, a)
 
@@ -45,16 +51,38 @@ def verifyImage(image, filename):
 	if fileinfo != 'PNG image data, 1480 x 625, 1-bit colormap, non-interlaced':
 		raise ValueError(filename, fileinfo)
 
+def commentToDict(comment):
+	commentDict = {}
+	for line in comment.split('\n'):
+		key, value = line.split(':', 1)
+		if key in commentDict:
+			value += ' ' + commentDict[key]
+		commentDict[key] = value
+	return commentDict
+
+def generateReport(file_, string):
+	report = '* ' + file_.split('.')[0] + '\t'
+	if string == "INVALID":
+		report += 'MISSING'
+	else:
+		try:
+			comments = commentToDict(string)
+		except ValueError, e:
+			print file_, e
+			exit()
+		report += '['+ comments['URL'].strip() + ' ' + comments['Source'].strip() + ']'
+	report += '\n'
+	return report
+
 def produceMap(root, files):
-	# TODO: make a report instead of missingTaxa
 	images = []
-	missingTaxa = []
+	report = "Taxa:\n"
 	for file_ in files:
 		filename = os.path.join(root,file_)
 		image = Image.open(filename)
 		try:
-			if image.text['Comment'] == "INVALID":
-				missingTaxa.append(file_.split('.')[0])
+			report += generateReport(file_, image.text['Comment'])
+			if image.text['Comment'] == 'INVALID': # don't render invalid maps
 				continue
 		except KeyError:
 			print filename, "has no metadata. Exiting."
@@ -75,10 +103,7 @@ def produceMap(root, files):
 		else:
 			rangeMap.append(colors[numCritters - 1])
 	saveMap(rangeMap, root)
-	print "Data missing for the following taxa:",
-	for taxon in missingTaxa:
-		print taxon + ',',
-	print
+	print report
 
 def saveMap(data, taxon):
 	im = Image.open('world/world.png')
@@ -100,7 +125,5 @@ def saveMap(data, taxon):
 if __name__ == "__main__":
 	for root, dirs, files in os.walk('Animalia'):
 		if len(files) > 0:
-			try:
-				produceMap(root, files)
-			except ValueError, e:
-				print e
+			produceMap(root, files)
+
