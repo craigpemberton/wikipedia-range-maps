@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, math, Image, ImageDraw, ImageFont, itertools
+import os, math, Image, ImageDraw, ImageFont, itertools, subprocess
 
 MAX_COLOR = (0, 51, 51)
 WHITE = (255, 255, 255)
@@ -24,9 +24,11 @@ def gradient(steps, maxColor = MAX_COLOR):
 	colors = []
 	minColor = colorIntermediate(maxColor, WHITE, 0.5)
 	for step in range(steps):
-		color = colorIntermediate(minColor, maxColor, step/(steps-1))
+		color = colorIntermediate(minColor, maxColor, float(step)/(steps-1))
 		color = map(int, color)
 		colors.append(color)
+	for color in colors:
+		print color
 	return colors
 		
 def freq(items):
@@ -39,19 +41,22 @@ def freq(items):
 		print key, '\t', value
 	return counts
 
+def verifyImage(image, filename):
+	process = subprocess.Popen(['file', filename], shell=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+	fileinfo = process.communicate()[0].split(':')[1].strip()
+	if fileinfo != 'PNG image data, 1480 x 625, 1-bit colormap, non-interlaced':
+		raise ValueError(filename, fileinfo)
+
 def produceMap(root, files):
 	images = []
 	for file_ in files:
 		image = Image.open(os.path.join(root,file_))
-		if image.getbands() != ('P',):
-			raise ValueError(file_, image.getbands())
-		if len(image.getcolors()) != 2:
-			raise ValueError(file_, image.getcolors())
+		verifyImage(image, root + '/' + file_)
 		images.append(image.getdata())
 	diversity = map(sum, zip(*images))
-	print root
-	freq(diversity)
-	print
+	#print root
+	#freq(diversity)
+	#print
 	highestDiversity = max(diversity)
 	colors = gradient(highestDiversity)
 	land = Image.open('world/world.png').getdata()
