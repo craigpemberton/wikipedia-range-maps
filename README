@@ -1,0 +1,26 @@
+Wikipeda-range-maps is a small project to automate the compostiting of geographical distribution maps of species.
+
+If you would like to contribute maps, ensure that they fit precisely over BlankMap-World. 
+the input for the program is 1-bit colormapped png files. A pixel is white if the species lives in that location, and
+black otherwise. The image metadata should state the source, source url, and if the species is aquatic or terrestrial. 
+Here is an example:
+
+Source: IUCN
+URL: http://www.iucnredlist.org/apps/redlist/details/2058/0
+Distribution: water
+
+And another, created from a written description:
+
+Source: Crude wikipedia description.
+URL: http://en.wikipedia.org/w/index.php?title=D%27Orbigny%27s_slider&oldid=454486266
+Distribution: land
+
+You don't need to draw exactly within the landmass or include borders. It's better if you ignore borders: if political
+borders change, it should be trivial to update all the maps if they are only represented once (in BlankMap-World).
+
+Goals: 
+* Verification with ITIS.gov for taxon completeness and validity.
+* Automatic cropping.
+* Color coding for maps with low degrees of overlap.
+* Higher taxa.
+
