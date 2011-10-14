@@ -7,9 +7,11 @@ WHITE = (255, 255, 255)
 
 def boundCoords(image):
 	#return image.getbbox()
+	pass
 
-deff boundCrop(image)
+def boundCrop(image):
 	#image.crop(coords)
+	pass
 
 def scalarProduct(a, c):
 	return map(lambda x:x*c, a)
