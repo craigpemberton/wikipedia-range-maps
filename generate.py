@@ -37,7 +37,7 @@ def gradient(steps, maxColor = MAX_COLOR):
 		colors.append(color)
 	return colors
 		
-def freq(items):
+def histogram(items):
 	counts = {}
 	for item in items:
 		counts[item] = counts.get(item, 0) + 1
@@ -129,3 +129,30 @@ if __name__ == "__main__":
 		if len(files) > 0:
 			produceMap(root, files)
 
+def newRecurse():
+	# this is just matrix of lists, one for each pixel
+	image = []*625*1480
+	metadata = ""
+
+	#compose all taxa and metadata
+	for taxon in taxa:
+		pass
+		# add taxa data, need to account for land or water
+		#image = map(sum, zip(taxon, image))
+		#metadata += getmeta
+
+	#make output image by adding in background
+	#choose render method
+	diversity = map(len, image)
+	if max(diversity) < 3:
+		pass
+		#colors, stripes in overlap, visual legend
+	else:
+		pass
+		#gradient based on diversity
+	# bounding box
+	# add in background
+	# crop
+	# store metadata
+	# save image
+	# return image and metadata
